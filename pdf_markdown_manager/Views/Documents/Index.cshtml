@@ -1,0 +1,65 @@
+﻿@model IEnumerable<pdf_markdown_manager.Models.Documents>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="d-flex justify-content-between w-100 m-2 mb-5">
+    <h1 class="h1">Twoje notatki</h1>
+    <button class="btn btn-primary" asp-action="Create">
+        <a asp-action="Create">Dodaj notatke</a>
+    </button>
+</div>
+
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.font_size)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.users_id)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.title)
+            </td>
+            <td class="mh-10">
+                    <span class="d-inline-block text-truncate" style="max-width:30vw;">
+                         @Html.DisplayFor(modelItem => item.content)
+                    </span>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.font_size)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.users_id)
+            </td>
+             <td class="p-3 d-flex flex-row justify-content-between align-items-center h-100">
+                <button type="button" class="btn btn-primary">
+                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> 
+                </button>
+                <button type="button" class="btn btn-info">
+                    <a asp-action="Details" asp-route-id="@item.id">Details</a> 
+                </button>
+                <button type="button" class="btn btn-danger">
+                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                </button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
