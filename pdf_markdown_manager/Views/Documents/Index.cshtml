@@ -1,4 +1,11 @@
-﻿@model IEnumerable<pdf_markdown_manager.Models.Documents>
+﻿@using Microsoft.AspNetCore.Identity
+@using pdf_markdown_manager.Models
+
+@model IEnumerable<pdf_markdown_manager.Models.Documents>
+
+@inject SignInManager<AuthUser> SignInManager
+@inject UserManager<AuthUser> UserManager
+
 
 @{
     ViewData["Title"] = "Index";
@@ -6,10 +13,17 @@
 
 <div class="d-flex justify-content-between w-100 m-2 mb-5">
     <h1 class="h1">Twoje notatki</h1>
-    <button class="btn btn-primary" asp-action="Create">
-        <a asp-action="Create">Dodaj notatke</a>
-    </button>
+    @if (SignInManager.IsSignedIn(User))
+    {
+         <button class="btn btn-primary" asp-action="Create">
+            <a asp-action="Create">Dodaj notatke</a>
+        </button>
+    }
 </div>
+
+
+    @if (SignInManager.IsSignedIn(User))
+    {
 
 
 <table class="table table-bordered">
@@ -62,4 +76,11 @@
         </tr>
 }
     </tbody>
-</table>
+    </table>
+
+}else
+{
+    <div class="alert alert-danger" role="alert">
+        Proszę się zalogować aby uzyskać listę notatek.
+    </div>
+}

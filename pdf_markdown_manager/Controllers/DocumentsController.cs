@@ -1,27 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pdf_markdown_manager.Models;
+
+
 
 namespace pdf_markdown_manager.Controllers
 {
     public class DocumentsController : Controller
     {
         private readonly DocumentsManagerContext _context;
+        private readonly UserManager<AuthUser> _userManager;
+        private readonly SignInManager<AuthUser> _signInManager;
 
-        public DocumentsController(DocumentsManagerContext context)
+        private readonly string userId;
+
+        public DocumentsController(DocumentsManagerContext context, UserManager<AuthUser> userMan, SignInManager<AuthUser> signMan)
         {
             _context = context;
+            _userManager = userMan;
+            _signInManager = signMan;
         }
 
         // GET: Documents
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Documents.ToListAsync());
+            if (!_signInManager.IsSignedIn(User)) return View(await _context.Documents.Where(x => false).ToListAsync());
+
+            string userId = _userManager.GetUserId(User);
+
+            return View(await _context.Documents.Where(x => x.users_id == userId).ToListAsync());
         }
 
         // GET: Documents/Details/5
@@ -45,7 +59,6 @@ namespace pdf_markdown_manager.Controllers
         // GET: Documents/Create
         public IActionResult Create()
         {
-            ViewBag.usersIds = _context.Documents.Select(doc => doc.users_id).Distinct().ToList();
 
             return View();
         }
@@ -55,10 +68,16 @@ namespace pdf_markdown_manager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,title,content,font_size,users_id")] Documents documents)
+        public async Task<IActionResult> Create([Bind("id,title,content,font_size")] Documents documents)
         {
-            documents.created_at = DateTime.Now;
 
+            string userId = _userManager.GetUserId(User);
+            if (userId == null) return View();
+
+            documents.created_at = DateTime.Now;
+            documents.users_id = userId;
+
+         
             if (ModelState.IsValid)
             {
                 _context.Add(documents);
@@ -89,7 +108,7 @@ namespace pdf_markdown_manager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,title,content,font_size,users_id")] Documents documents)
+        public async Task<IActionResult> Edit(int id, [Bind("id,title,content,font_size,users_id,created_at")] Documents documents)
         {
             if (id != documents.id)
             {

@@ -1,11 +1,16 @@
 using pdf_markdown_manager.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DocumentsManagerContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("markdown_pdf")));
+builder.Services.AddDbContext<IdentityDbManager>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("markdown_pdf")));
+
+builder.Services.AddDefaultIdentity<AuthUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IdentityDbManager>();
+//builder.Services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<IdentityDbManager>().AddApiEndpoints();
 // builder.Services.AddTransient<IDocumentsRepository, DocumentsRepository>();
 
 var app = builder.Build();
@@ -24,6 +29,10 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapIdentityApi<IdentityUser>();
+
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",

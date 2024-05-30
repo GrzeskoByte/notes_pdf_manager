@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="content" class="control-label"></label>
-                <input asp-for="content" class="form-control" />
+                <textarea asp-for="content" class="form-control" multiple="true"></textarea>
                 <span asp-validation-for="content" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -28,12 +28,7 @@
                 <input asp-for="font_size" class="form-control" />
                 <span asp-validation-for="font_size" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="users_id" class="control-label"></label>
-                <input asp-for="users_id" class="form-control" />
-                <span asp-validation-for="users_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+                      <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>

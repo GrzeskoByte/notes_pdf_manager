@@ -1,11 +1,17 @@
-﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace pdf_markdown_manager.Models
 {
-    public class AuthUser : Users
+    [Table("AspNetUsers")]
+    public class AuthUser : IdentityUser
     {
-        public string login { get; set; }
-        public string password { get; set; }
 
+       
+        [Required]
+        [StringLength(15)]
+        public string? Password { get; set; } = String.Empty;
     }
 }
