@@ -4,10 +4,9 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Szczegóły notatki</h1>
 
 <div>
-    <h4>Documents</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -28,12 +27,13 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.font_size)
         </dd>
-              <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.users_id)
-        </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
+<div class="mt-2">
+    <button class="btn btn-warning">
+        <a asp-action="Edit" asp-route-id="@Model?.id">Edycja</a> 
+    </button>
+    <button class="btn btn-primary">
     <a asp-action="Index">Powrót do listy</a>
+</button>
 </div>

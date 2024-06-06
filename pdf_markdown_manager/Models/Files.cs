@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace pdf_markdown_manager.Models
 {
-    public class Documents
+    public class Files
     {
         [Key]
         public int id { get; set; }
@@ -14,16 +14,12 @@ namespace pdf_markdown_manager.Models
 
         [DisplayName("Zawartość")]
         [MaxLength(5000)]
-        public string content { get; set; }
+        public byte[] content { get; set; }
 
         [DisplayName("Wielkość czcionki")]
         [MaxLength(3)]
-        public string font_size { get; set; } = "12";
-
-        public DateTime created_at { get; set; }
 
         [ScaffoldColumn(false)]
         public string users_id { get; set; } = String.Empty;
-
     }
 }

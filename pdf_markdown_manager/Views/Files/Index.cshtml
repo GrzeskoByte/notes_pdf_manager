@@ -1,0 +1,38 @@
+﻿@model IEnumerable<pdf_markdown_manager.Models.Files>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Twoje pliki</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.title)
+            </th>
+            <th>
+            </th>
+            </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.title)
+            </td>
+            <td>
+                    <button type="button" class="btn btn-dark">
+                        <a asp-action="DownloadFile" asp-route-id="@item.id">Pobierz</a>
+                    </button>
+<button type="button" class="btn btn-danger">
+                        <a asp-action="Delete" asp-route-id="@item.id">Usuń</a>
+                    </button>
+
+            </td>
+                </tr>
+}
+    </tbody>
+</table>

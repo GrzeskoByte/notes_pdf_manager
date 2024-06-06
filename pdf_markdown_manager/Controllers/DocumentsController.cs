@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pdf_markdown_manager.Models;
+using pdf_markdown_manager.PDFGeneration;
+using pdf_markdown_manager.Models;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+
+
 
 
 
@@ -77,7 +85,7 @@ namespace pdf_markdown_manager.Controllers
             documents.created_at = DateTime.Now;
             documents.users_id = userId;
 
-         
+
             if (ModelState.IsValid)
             {
                 _context.Add(documents);
@@ -85,6 +93,59 @@ namespace pdf_markdown_manager.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(documents);
+        }
+
+        public async Task<IActionResult> PrintDocument(int id)
+        {
+            Documents doc = await _context.Documents.FindAsync(id);
+
+            if (doc == null) return NotFound();
+
+            PdfDocument pdf = new PdfDocument();
+
+            pdf.Info.Title = doc.title;
+
+            PdfPage page = pdf.AddPage();
+
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XFont font = new XFont("Verdana", double.Parse(doc.font_size), XFontStyleEx.Bold);
+
+            double x = 50; 
+            double y = 50;
+
+            string[] words = doc.content.Split(' ');
+
+            foreach (string word in words)
+            {
+                XSize wordSize = gfx.MeasureString(word, font);
+
+                if (x + wordSize.Width > page.Width)
+                {
+                    x = 50; 
+                    y += font.Height; 
+                }
+
+                gfx.DrawString(word, font, XBrushes.Black, x, y);
+
+                x += wordSize.Width + 1; 
+            }
+
+            MemoryStream stream = new MemoryStream();
+
+            pdf.Save(stream, false);
+
+            byte[] fileContent = stream.ToArray();
+
+            Files file = new Files();
+
+            file.title = doc.title;
+            file.content = fileContent;
+            file.users_id = doc.users_id;
+
+            _context.Files.Add(file);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index","Files");
         }
 
         // GET: Documents/Edit/5
@@ -108,12 +169,18 @@ namespace pdf_markdown_manager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,title,content,font_size,users_id,created_at")] Documents documents)
+        public async Task<IActionResult> Edit(int id, [Bind("title,content,font_size")] Documents documents)
         {
-            if (id != documents.id)
-            {
-                return NotFound();
-            }
+
+            Documents existingDoc = await _context.Documents.FindAsync(id);
+
+            if (existingDoc == null) return NotFound();
+
+            documents.id = existingDoc.id;
+            documents.created_at = existingDoc.created_at;
+            documents.users_id = existingDoc.users_id;
+
+            _context.Entry(existingDoc).State = EntityState.Detached;
 
             if (ModelState.IsValid)
             {

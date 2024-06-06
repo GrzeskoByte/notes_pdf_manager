@@ -1,16 +1,19 @@
-﻿@model pdf_markdown_manager.Models.Documents
+﻿@model pdf_markdown_manager.Models.Files
 
 @{
-    ViewData["Title"] = "Tworzenie notatki";
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Tworzenie notatki</h1>
-<hr />
+<h1>Edit</h1>
 
-<div class="row mt-2">
-    <div class="col-md-12">
-        <form asp-action="Create" style="width:100%">
+<h4>Files</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
             <div class="form-group">
                 <label asp-for="title" class="control-label"></label>
                 <input asp-for="title" class="form-control" />
@@ -18,26 +21,18 @@
             </div>
             <div class="form-group">
                 <label asp-for="content" class="control-label"></label>
-                <textarea asp-for="content" class="form-control" multiple="true"></textarea>
+                <input asp-for="content" class="form-control" />
                 <span asp-validation-for="content" class="text-danger"></span>
             </div>
-
             <div class="form-group">
-                <label asp-for="font_size" class="control-label"></label>
-                <input asp-for="font_size" class="form-control" />
-                <span asp-validation-for="font_size" class="text-danger"></span>
-            </div>
-
-          
-            <div class="form-group mt-2">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Powrot do listy</a>
+    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
