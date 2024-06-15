@@ -101,7 +101,7 @@ namespace pdf_markdown_manager.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        ModelState.AddModelError(string.Empty, "Próba logowania skończona niepowodzeniem");
                         return Page();
                     }
 

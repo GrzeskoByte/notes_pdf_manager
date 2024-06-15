@@ -62,9 +62,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.font_size)
             </th>
-            <th>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    
+                <th>
                 @Html.DisplayNameFor(model => model.users_id)
             </th>
+                }
             <th>
                 @Html.DisplayNameFor(model=>model.created_at)
             </th>
@@ -87,9 +92,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.font_size)
             </td>
+                    @if (User.IsInRole("Admin"))
+                    {
+
             <td>
                 @Html.DisplayFor(modelItem => item.users_id)
             </td>
+                    }
             <td>
 
                 @Html.DisplayFor(modelItem => item.created_at)

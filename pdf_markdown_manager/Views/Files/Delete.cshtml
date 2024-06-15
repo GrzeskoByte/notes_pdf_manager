@@ -5,11 +5,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Usuwanie</h1>
 
 <h3>Napewno chcesz usunąć ten dokument? (Tak długo jak nie usuniesz notatki będziesz mógł wygenerować nowy dokument)</h3>
 <div>
-    <h4>Files</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -22,7 +20,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <input type="submit" value="Usuń" class="btn btn-danger" /> |
         <a asp-action="Index">Powrót do listy</a>
     </form>
 </div>

@@ -33,6 +33,15 @@ namespace pdf_markdown_manager.Controllers
 
             string userId = _userManager.GetUserId(User);
 
+            var user = await _userManager.GetUserAsync(User);
+
+            var isAdminUser = await _userManager.IsInRoleAsync(user, "Admin");
+
+            if (isAdminUser)
+            {
+                return View(await _context.Files.ToListAsync());
+            }
+
             return View(await _context.Files.Where(x => x.users_id == userId).ToListAsync());
 
         }

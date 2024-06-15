@@ -43,6 +43,14 @@ namespace pdf_markdown_manager.Controllers
             if (!_signInManager.IsSignedIn(User)) return View(await _context.Documents.Where(x => false).ToListAsync());
 
             string userId = _userManager.GetUserId(User);
+            var user = await _userManager.GetUserAsync(User);
+
+            var isAdminUser = await _userManager.IsInRoleAsync(user, "Admin");
+
+            if (isAdminUser)
+            {
+                return View(await _context.Documents.ToListAsync());
+            }
 
             return View(await _context.Documents.Where(x => x.users_id == userId).ToListAsync());
         }
@@ -194,7 +202,7 @@ namespace pdf_markdown_manager.Controllers
 
             if (existingDoc == null) return NotFound();
 
-             if (!float.TryParse(documents.font_size, out float parsedFontSize))
+            if (!float.TryParse(documents.font_size, out float parsedFontSize))
             {
                 ViewData["ErrorMessage"] = "Czcionka musi być wartością liczbową";
                 return View();
