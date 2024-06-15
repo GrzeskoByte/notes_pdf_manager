@@ -14,6 +14,7 @@ using pdf_markdown_manager.PDFGeneration;
 using pdf_markdown_manager.Models;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
+using Microsoft.IdentityModel.Tokens;
 
 
 
@@ -44,6 +45,17 @@ namespace pdf_markdown_manager.Controllers
             string userId = _userManager.GetUserId(User);
 
             return View(await _context.Documents.Where(x => x.users_id == userId).ToListAsync());
+        }
+
+        [HttpPost]
+        public IActionResult Search(string searchTerm)
+        {
+            if (searchTerm.IsNullOrEmpty())
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            var notes = _context.Documents.Where(x => x.title.ToLower().Contains(searchTerm.ToLower()));
+            return View("Index", notes);
         }
 
         // GET: Documents/Details/5
@@ -110,7 +122,7 @@ namespace pdf_markdown_manager.Controllers
             XGraphics gfx = XGraphics.FromPdfPage(page);
             XFont font = new XFont("Verdana", double.Parse(doc.font_size), XFontStyleEx.Bold);
 
-            double x = 50; 
+            double x = 50;
             double y = 50;
 
             string[] words = doc.content.Split(' ');
@@ -121,13 +133,13 @@ namespace pdf_markdown_manager.Controllers
 
                 if (x + wordSize.Width > page.Width)
                 {
-                    x = 50; 
-                    y += font.Height; 
+                    x = 50;
+                    y += font.Height;
                 }
 
                 gfx.DrawString(word, font, XBrushes.Black, x, y);
 
-                x += wordSize.Width + 1; 
+                x += wordSize.Width + 1;
             }
 
             MemoryStream stream = new MemoryStream();
@@ -145,7 +157,7 @@ namespace pdf_markdown_manager.Controllers
             _context.Files.Add(file);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index","Files");
+            return RedirectToAction("Index", "Files");
         }
 
         // GET: Documents/Edit/5

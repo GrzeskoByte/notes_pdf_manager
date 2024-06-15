@@ -20,6 +20,7 @@ namespace pdf_markdown_manager.Models
         [MaxLength(3)]
         public string font_size { get; set; } = "12";
 
+        [DisplayName("Stworzone")]
         public DateTime created_at { get; set; }
 
         [ScaffoldColumn(false)]

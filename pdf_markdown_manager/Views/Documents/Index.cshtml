@@ -26,6 +26,30 @@
     {
 
 
+    <form method="post" asp-action="Search">
+   
+    <div class="input-group input-group-sm mb-3">
+        <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Wyszukaj notatkę" name="searchTerm">
+        <div class="input-group-prepend">
+        <button class="btn btn-primary" type="submit">Szukaj</button>
+        </div>
+    </div>
+
+
+    </form>
+
+    <div class="btn-group mb-2">
+        <p class="mr-5">Sortowanie</p>
+        <select class="form-select" id="sort-select">
+            <option value="Tytuł" selected>Po nazwie</option>
+            <option value="Stworzone">Po dacie</option>
+        </select>
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="sortTable('desc')">Malejąco<i class="fas fa-sort"></i></button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="sortTable('asc')">Rosnąca <i class="fas fa-sort"></i></button>
+    </div>
+
+
+
 <table class="table table-bordered">
     <thead class="table-dark">
         <tr>
@@ -41,7 +65,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.users_id)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model=>model.created_at)
+            </th>
+            <th>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -62,6 +90,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.users_id)
             </td>
+            <td>
+
+                @Html.DisplayFor(modelItem => item.created_at)
+            </td>
              <td class="p-3 d-flex flex-row justify-content-between align-items-center h-100">
                 <button type="button" class="btn btn-primary">
                     <a asp-action="Edit" asp-route-id="@item.id">Edytuj</a> 
@@ -73,7 +105,7 @@
                     <a asp-action="Delete" asp-route-id="@item.id">Usuń</a>
                 </button>
                 <button type="button" class="btn btn-dark">
-                    <a asp-action="PrintDocument" asp-route-id="@item.id">Drukuj</a>
+                    <a asp-action="PrintDocument" asp-route-id="@item.id">Generuj</a>
                 </button>
 
             </td>
@@ -88,3 +120,62 @@
         Proszę się zalogować aby uzyskać listę notatek.
     </div>
 }
+
+<script>
+    function sortTable(order = "desc") {
+        const criteria = document.getElementById("sort-select").value;
+        const table = document.querySelector('table');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+
+        rows.sort(function (rowA, rowB) {
+            const cellA = rowA.querySelector('td:nth-child(' + (getColumnIndex(criteria) + 1) + ')').innerText.trim();
+            const cellB = rowB.querySelector('td:nth-child(' + (getColumnIndex(criteria) + 1) + ')').innerText.trim();
+
+            if (criteria === 'Stworzone') {
+                const dateA = new Date(cellA.split("/").reverse().join("-"));
+                const dateB = new Date(cellB.split("/").reverse().join("-"));
+
+                const timeA = dateA.getTime();
+                const timeB = dateB.getTime();
+
+                if (isNaN(timeA) && isNaN(timeB)) {
+                    return 0; 
+                } else if (isNaN(timeA)) {
+                    return order === 'asc' ? -1 : 1; 
+                } else if (isNaN(timeB)) {
+                    return order==='asc' ? 1 : -1;
+                }
+
+                return order==='asc' ? timeA - timeB : timeB - timeA;
+
+            }
+
+            return cellA.localeCompare(cellB);
+        });
+        
+        if (order === 'asc' && criteria ==='Tytuł') rows.reverse();
+
+
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+
+        rows.forEach(function (row) {
+            tbody.appendChild(row);
+        });
+
+    }
+
+    function getColumnIndex(criteria) {
+        switch (criteria) {
+            case 'Tytuł':
+                return 0;
+            case "Stworzone":
+                return 4;
+             default:
+                return 0;
+        }
+    }
+</script>
