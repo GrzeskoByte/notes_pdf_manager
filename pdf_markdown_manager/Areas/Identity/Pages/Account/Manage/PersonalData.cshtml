@@ -1,0 +1,32 @@
+﻿@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "Twoje dane";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="mb-3 mt-2">Twój profil posiada dane, które nam udostępniłeś. Tutaj możesz je pobrać lub usunąć.</p>
+
+        <p class="mb-3">
+            <strong>Usuwanie danych usunie twoje konto, tej operacji nie będzie można odwrócić.</strong>
+        </p>
+
+        <div class="flex gap-5">
+
+        <form id="download-data" asp-page="DownloadPersonalData" method="post">
+            <button class="btn btn-primary" type="submit">Pobierz</button>
+        </form>
+        <p>
+            <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger">Usuń</a>
+        </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

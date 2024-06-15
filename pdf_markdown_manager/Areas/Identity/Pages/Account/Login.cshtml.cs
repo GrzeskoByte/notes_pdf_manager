@@ -50,7 +50,7 @@ namespace pdf_markdown_manager.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Pamiętaj mnie")]
             public bool RememberMe { get; set; }
         }
 
@@ -87,7 +87,7 @@ namespace pdf_markdown_manager.Areas.Identity.Pages.Account
 
                     if (result.Succeeded)
                     {
-                        _logger.LogInformation("User logged in.");
+                        _logger.LogInformation("Użytkownik zalogowany");
                         return LocalRedirect(returnUrl);
                     }
                     if (result.RequiresTwoFactor)

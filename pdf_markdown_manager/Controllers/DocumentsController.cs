@@ -97,6 +97,11 @@ namespace pdf_markdown_manager.Controllers
             documents.created_at = DateTime.Now;
             documents.users_id = userId;
 
+            if (!float.TryParse(documents.font_size, out float parsedFontSize))
+            {
+                ViewData["ErrorMessage"] = "Czcionka musi być wartością liczbową";
+                return View();
+            }
 
             if (ModelState.IsValid)
             {
@@ -168,6 +173,7 @@ namespace pdf_markdown_manager.Controllers
                 return NotFound();
             }
 
+
             var documents = await _context.Documents.FindAsync(id);
             if (documents == null)
             {
@@ -187,6 +193,13 @@ namespace pdf_markdown_manager.Controllers
             Documents existingDoc = await _context.Documents.FindAsync(id);
 
             if (existingDoc == null) return NotFound();
+
+             if (!float.TryParse(documents.font_size, out float parsedFontSize))
+            {
+                ViewData["ErrorMessage"] = "Czcionka musi być wartością liczbową";
+                return View();
+            }
+
 
             documents.id = existingDoc.id;
             documents.created_at = existingDoc.created_at;
